@@ -61,6 +61,7 @@
   set threshold_snaphu = `grep threshold_snaphu $2 | awk '{print $3}'`
   set threshold_geocode = `grep threshold_geocode $2 | awk '{print $3}'`
   set region_cut = `grep region_cut $2 | awk '{print $3}'`
+  set region_cut_snaphu = `grep region_cut_snaphu $2 | awk '{print $3}'`
   set switch_land = `grep switch_land $2 | awk '{print $3}'`
   set defomax = `grep defomax $2 | awk '{print $3}'`
   set range_dec = `grep range_dec $2 | awk '{print $3}'`
@@ -192,12 +193,12 @@ if ($stage <= 2) then
     
     if ($threshold_snaphu != 0 ) then
       if ($switch_land == 1) then
-        if ($region_cut == "") then
-          set region_cut = `gmt grdinfo phase.grd -I- | cut -c3-20`
+        if ($region_cut_snaphu == "") then
+          set region_cut_snaphu = `gmt grdinfo phase.grd -I- | cut -c3-20`
         endif
         cd ../../topo
         if (! -f landmask_ra.grd) then
-          landmask.csh $region_cut
+          landmask.csh $region_cut_snaphu
         endif
         cd ../intf
         cd $ref_id"_"$rep_id
@@ -208,9 +209,9 @@ if ($stage <= 2) then
       echo "SNAPHU.CSH - START"
       echo "threshold_snaphu: $threshold_snaphu"
       if ($near_interp == 1) then
-        snaphu_interp.csh $threshold_snaphu $defomax $region_cut
+        snaphu_interp.csh $threshold_snaphu $defomax $region_cut_snaphu
       else
-        snaphu.csh $threshold_snaphu $defomax $region_cut
+        snaphu.csh $threshold_snaphu $defomax $region_cut_snaphu
       endif
       echo "SNAPHU.CSH - END"
     else
@@ -246,5 +247,6 @@ endif
 echo ""
 echo "END STACK OF TOPS INTERFEROGRAMS"
 echo ""
+
 
 
